@@ -1,0 +1,60 @@
+﻿@model TodoApplication.Models.TodoIndexViewModel
+
+<h2>Todo List</h2>
+
+@if (Model.UpcomingTodos != null && Model.UpcomingTodos.Any())
+{
+	<div class="alert alert-warning alert-dismissible fade show" role="alert">
+		<strong>You have upcoming tasks!</strong>
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+		</button>
+	</div>
+}
+
+<form method="get" asp-action="Index">
+	<div class="form-group flex-container">
+		<label for="filterDate">Filter by Date</label>
+		<input type="date" id="filterDate" name="filterDate" class="form-control" 
+		       value="@Model.FilterDate?.ToString("yyyy-MM-dd")" />
+		<button type="submit" class="btn btn-primary mt-2">Filter</button>
+	</div>
+</form>
+
+<hr>
+
+<table class="table table-bordered table-striped">
+	<thead>
+	<tr>
+		<th>Title</th>
+		<th>Description</th>
+		<th>Date</th>
+		<th>Status</th>
+		<th>Actions</th>
+	</tr>
+	</thead>
+	<tbody>
+	@foreach (var todo in Model.Todos)
+	{
+		<tr>
+			<td>@todo.Title</td>
+			<td>@todo.Description</td>
+			<td>@todo.Date.ToShortDateString()</td>
+			<td>@(todo.IsCompleted ? "Completed" : "Pending")</td>
+			<td>
+				<form asp-action="Delete" asp-route-id="@todo.Id" method="post" style="display:inline;">
+					<button type="submit" class="btn btn-danger">Delete</button>
+				</form>
+				<a asp-action="Edit" asp-route-id="@todo.Id" class="btn btn-primary">Edit</a>
+			</td>
+		</tr>
+	}
+	</tbody>
+</table>
+
+<script>
+	document.querySelector('.close').addEventListener('click', function () {
+		var alertBox = this.closest('.alert');
+		alertBox.style.display = 'none';
+	});
+</script>
